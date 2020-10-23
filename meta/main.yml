@@ -3,4 +3,4 @@
   name: centbasic 
   vars:
     allow_reboot: true
-    permit_ssh_forward: "{{ permit_ssh_forward }}"
+    permit_ssh_forward: {{ permit_ssh_forward }}
