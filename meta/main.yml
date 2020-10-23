@@ -1,4 +1,4 @@
-- src: https://github.com/Darkbat91/centbasic
+- src: git+https://github.com/Darkbat91/centbasic
   version: master 
   name: centbasic 
   vars:
