@@ -1,5 +1,5 @@
 # Also allow this server to act as a bastion for admins
-permit_ssh_forward: true
+acting_bastion: true
 
 # VPN Config
 VPN_CIDR: '10.2.0.0/16'
