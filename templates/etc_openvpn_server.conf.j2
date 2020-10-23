@@ -1,5 +1,5 @@
 # Only for troubleshooting should be commented out when dones
-log-append /etc/openvpn/server/openvpn-{{ item.proto }}-{{ item.port }}
+log-append /etc/openvpn/server/openvpn-{{ item.proto }}-{{ item.port }}.log
 verb 1
 # Enable management interface - No auth so should only listen on the loopback
 #management 127.0.0.1 5555

@@ -19,6 +19,12 @@
   become: true  
   with_items: "{{ openvpn_instances }}"
 
+- name: OpenVPN | SELinux | Make fixes effective
+  shell: "restorecon /etc/openvpn/server/openvpn-{{ item.proto }}-{{ item.port }}.log"
+  changed_when: false   
+  become: true       
+  with_items: "{{ openvpn_instances }}"
+
 - name: OpenVPN | PKI | Deploy server Cert
   copy:
     src: '{{ pki_dir }}/vpn.pem'
