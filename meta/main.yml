@@ -1,5 +1,7 @@
-- src: git+https://github.com/Darkbat91/centbasic
-  version: master 
-  name: centbasic 
-  vars:
-    allow_reboot: true
+dependencies:
+  - src: git+https://github.com/Darkbat91/centbasic
+    version: master 
+    name: centbasic 
+    vars:
+      allow_reboot: true
+      permit_ssh_forward: "{{ permit_ssh_forward }}"
