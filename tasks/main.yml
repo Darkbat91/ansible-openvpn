@@ -5,3 +5,7 @@
   failed_when: pki_dir is not defined
 
 - include: packages.yml
+
+- include: openvpn.yml
+
+- include: gateways.yml

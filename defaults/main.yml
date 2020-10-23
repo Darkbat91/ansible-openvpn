@@ -6,6 +6,7 @@ VPN_CIDR: '10.2.0.0/16'
 VPN_GATEWAY: '10.2.0.1'
 VPN_MASK: '10.2.0.0 255.255.0.0'
 
+# Instances of openvpn to run
 openvpn_instances:
   - {
       proto: udp,
@@ -24,6 +25,7 @@ openvpn_instances:
   }
 
 # CIDR - classless interdomain routing
+create_gateways: false
 client_gateways:
   - {
     name: "gateway30",

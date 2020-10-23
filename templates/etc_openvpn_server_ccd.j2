@@ -1,0 +1,10 @@
+# Needs to be the same name as the CN of the SSL certificate
+
+
+# Make sure that we can access the local lan but still route all traffic over the VPN
+push "redirect-gateway def1"
+
+# Sets the IP address of the device
+ifconfig-push {{ STATIC_MASK |replace("REPL", index + STATIC_START)}}
+# lets Open VPN know that the below subnet is behind this VPN client
+iroute {{ item.fullyqualified }}
