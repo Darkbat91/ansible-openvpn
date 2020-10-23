@@ -1,3 +1,9 @@
+- name: systemd tmpfiles
+  shell: systemd-tmpfiles --remove --create
+  changed_when: false
+  tags:
+    - skip_ansible_lint
+
 - name: Openvpn | Handlers | Restart vpns
   service:
     name: "openvpn@{{ item.proto }}-{{ item.port }}.service"

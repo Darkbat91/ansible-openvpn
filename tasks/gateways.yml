@@ -5,7 +5,7 @@
     owner: openvpn
     group: openvpn
     mode: '0440'
-  with:
+  with_items:
     - "{{ client_gateway }}"
   when: create_gateways
 
