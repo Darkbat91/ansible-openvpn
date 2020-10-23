@@ -1,0 +1,89 @@
+- name: OpenVPN | sysctl | Enable IPv4 traffic forwarding
+  sysctl:
+    name: net.ipv4.ip_forward
+    value: '1'
+
+- name: OpenVPN | PKI | Deploy server Cert
+  copy:
+    src: '{{ pki_dir }}/vpn.pem'
+    dest: '{{ openvpn_remoteserver_cert }}'
+    group: openvpn
+    owner: openvpn
+    mode: '0440'
+  become: true
+  notify:
+    restart_openvpn
+
+- name: OpenVPN | PKI | Deploy server key
+  copy:
+    src: '{{ pki_dir }}/vpn.key'
+    dest: '{{ openvpn_remoteserver_key }}'
+    group: openvpn
+    owner: openvpn
+    mode: '0400'
+  become: true
+  notify:
+    restart_openvpn
+
+- name: OpenVPN | PKI | Deploy ta.key
+  copy:
+    src: '{{ pki_dir }}/ta.key'
+    dest: '{{ openvpn_remotehmac_firewall }}'
+    group: openvpn
+    owner: openvpn
+    mode: '0400'
+  become: true
+  notify:
+    restart_openvpn
+
+- name: OpenVPN | PKI | Deploy CRL
+  copy:
+    src: '{{ pki_dir }}/crl.pem'
+    dest: '{{ openvpn_remotecrl }}'
+    group: openvpn
+    owner: openvpn
+    mode: '0440'
+  become: true
+  notify:
+    restart_openvpn    
+
+- name: OpenVPN | PKI | Deploy CA
+  copy:
+    src: '{{ pki_dir }}/ca.pem'
+    dest: '{{ openvpn_remoteca }}'
+    group: openvpn
+    owner: openvpn
+    mode: '0440'
+  become: true
+  notify:
+    restart_openvpn  
+
+- name: OpenVPN | PKI | Deploy DH
+  copy:
+    src: '{{ pki_dir }}/dh.pem'
+    dest: '{{ openvpn_remotedh }}'
+    group: openvpn
+    owner: openvpn
+    mode: '0440'
+  become: true
+  notify:
+    restart_openvpn
+
+- name: OpenVPN | Directories | Create CCD
+  file:
+    path: /etc/openvpn/server/ccd
+    state: directory
+    owner: openvpn
+    group: openvpn
+    mode: 0750
+
+- name: OpenVPN | Configuration | Copy OpenVPN server configuration files into place
+  template:
+    src: etc_openvpn_server.conf.j2
+    dest: "{{ openvpn_remotedir }}/{{ item.proto }}-{{ item.port }}.conf"
+    owner: openvpn
+    group: openvpn
+    mode: '0440'
+  with_items: "{{ openvpn_instances }}"
+  notify:
+    - restart_openvpn

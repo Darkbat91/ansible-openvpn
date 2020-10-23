@@ -1,0 +1,46 @@
+# Also allow this server to act as a bastion for admins
+permit_ssh_forward: true
+
+# VPN Config
+VPN_CIDR: '10.2.0.0/16'
+VPN_GATEWAY: '10.2.0.1'
+VPN_MASK: '10.2.0.0 255.255.0.0'
+
+openvpn_instances:
+  - {
+      proto: udp,
+      port: 1194,
+      mask: "{{ VPN_MASK }}",
+      cidr: "{{ VPN_CIDR }}",
+      gateway: "{{ VPN_GATEWAY }}",
+  }
+
+  - {
+      proto: tcp,
+      port: 443,
+      mask: "{{ VPN_MASK }}",
+      cidr: "{{ VPN_CIDR }}",
+      gateway: "{{ VPN_GATEWAY }}",
+  }
+
+# CIDR - classless interdomain routing
+client_gateways:
+  - {
+    name: "gateway30",
+    cidr: '192.168.30.0/24',
+    fullyqualified: '192.168.30.0 255.255.255.0'
+   }
+  - {
+    name: "gateway31",
+    cidr: '192.168.31.0/24',
+    fullyqualified: '192.168.31.0 255.255.255.0'
+   }
+
+# Crypto 
+openvpn_auth_digest: SHA384
+openvpn_cipher: AES-256-GCM
+openvpn_tls_cipher: >-
+  TLS-ECDHE-ECDSA-WITH-AES-256-GCM-SHA384
+upstream_dns_servers:
+  - 9.9.9.9
+  - 1.1.1.1

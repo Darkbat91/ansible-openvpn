@@ -1,0 +1,64 @@
+- name: OpenVPN | Create CCD Files For Gateways
+  template:
+    src: etc_openvpn_server_ccd.j2
+    dest: '/etc/openvpn/server/ccd/{{item[0]}}'
+    owner: openvpn
+    group: openvpn
+    mode: '0440'
+  with:
+    - "{{ client_gateway }}"
+
+- name: OpenVPN | Create CCD Files for Admins
+  template:
+    src: etc_openvpn_server_ccd_admin.j2
+    dest: '/etc/openvpn/server/ccd/{{item}}'
+    owner: openvpn
+    group: openvpn
+    mode: '0440'
+  with_items:
+    - "{{ NODE_ADMIN }}"
+  loop_control:
+    index_var: index
+
+- name: OpenVPN | setcap | Ensure  openvpn user can run 'ip' and 'openvpn'
+  file:
+    path: "{{ item }}"
+    group: openvpn
+    mode: 0750
+  with_items:
+    - "/usr/sbin/ip"
+    - "/usr/sbin/openvpn"
+
+- name: OpenVPN | setcap | Set capabilities to allow /usr/sbin/openvpn to bind to reserved (0-1024) ports
+  capabilities:
+    path: /usr/sbin/openvpn
+    capability: '{{ item }}'
+  with_items:
+    - "cap_net_admin+eip"
+    - "cap_net_bind_service+eip"
+
+- name: OpenVPN | setcap | Set capabilities to allow /usr/sbin/ip" perform network admin tasks
+  capabilities:
+    path: "/usr/sbin/ip"
+    capability: 'cap_net_admin+eip'
+
+- name: OpenVPN | systemd | Make override directories
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    - "/etc/systemd/system/openvpn@.service.d"
+
+- name: OpenVPN | systemd | Use override file to better sandbox OpenVPN and run as openvpn user
+  template:
+    src: etc_systemd_system_openvpn@.service.d_override.conf.j2
+    dest: /etc/systemd/system/openvpn@.service.d/override.conf
+  notify:
+    - restart_openvpn
+
+- name: OpenVPN | systemd | Use systemd-tmpfiles to create /run/openvpn on startup
+  template:
+    src: etc_tmpfiles.d_openvpn.conf
+    dest: /etc/tmpfiles.d/openvpn.conf
+  notify:
+    - systemd tmpfiles

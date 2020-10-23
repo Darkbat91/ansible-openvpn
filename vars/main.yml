@@ -1,0 +1,12 @@
+required_packages:
+  - openssl
+  - openvpn
+
+openvpn_remotedir: '/etc/openvpn/'
+openvpn_serverdir: '{{ openvpn_remotedir }}server/'
+openvpn_remotehmac_firewall: '{{ openvpn_serverdir }}ta.key'
+openvpn_remoteserver_cert: '{{ openvpn_serverdir }}server.crt'
+openvpn_remoteserver_key: '{{ openvpn_serverdir }}server.key'
+openvpn_remoteca: '{{ openvpn_serverdir }}ca.crt'
+openvpn_remotedh: '{{ openvpn_serverdir }}dh.pem'
+openvpn_remotecrl: '{{ openvpn_serverdir }}crl.pem'

@@ -1,0 +1,64 @@
+# Only for troubleshooting should be commented out when dones
+log-append /var/log/openvpn.log
+verb 1
+# Enable management interface - No auth so should only listen on the loopback
+#management 127.0.0.1 5555
+
+# Tunnel Device Options
+dev tun-{{ item.proto }}-{{ item.port }}
+proto {{ item.proto }}4
+port {{ item.port }}
+keepalive 10 120
+# Removed due to VORACLE - https://community.openvpn.net/openvpn/wiki/VORACLE
+#comp-lzo
+persist-key
+persist-tun
+engine rdrand
+
+ Server Crypto
+ca {{ openvpn_remoteca }}
+cert {{ openvpn_remoteserver_cert }}
+key {{ openvpn_remoteserver_key }}
+dh {{ openvpn_remotedh }}
+crl-verify {{ openvpn_remotecrl }}
+remote-cert-tls client
+    # Management Cipher
+tls-crypt {{ openvpn_remotehmac_firewall }}
+tls-cipher {{ openvpn_tls_cipher }}
+tls-version-min 1.2
+    # VPN Cipher
+cipher {{ openvpn_cipher }}
+# for 2.3 support TLS-DHE-RSA-WITH-AES-256-CBC-SHA256
+# for 2.3 support AES-256-CBC
+auth {{ openvpn_auth_digest }}
+# for 2.3 support SHA384
+ecdh-curve secp384r1
+
+# General Networking
+server {{ item.mask }}
+ifconfig-pool-persist {{ openvpn_serverdir }}ipp.txt 10
+# Specify the Client configuration directory relative to the service start
+client-config-dir {{ openvpn_serverdir }}/ccd
+# Enable clients to communicate with one another
+# client-to-client
+
+# Configure the below line with the proper IP space for every ClientGW subnet relevant
+# route 10.10.23.0 255.255.255.0
+{% for route in client_gateways %}
+route {{ route.fullyqualified }}
+{% endfor %}
+
+# BOTH have to be specified otherwise VPN defaults to net 30.. dont trust online
+topology subnet
+
+# Client Directives
+{% for server in upstream_dns_servers %}
+push "dhcp-option DNS {{ server }}"
+{% endfor %}
+# Block Local Subnet access
+push "redirect-gateway block-local"
+# IF local is needed switch to this Directive
+#push "redirect-gateway def1"
+# Fix for the Windows 10 DNS leak described here:
+# https://community.openvpn.net/openvpn/ticket/605
+push block-outside-dns
