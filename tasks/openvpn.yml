@@ -109,3 +109,8 @@
   with_items: "{{ openvpn_instances }}"
   notify:
     - restart_openvpn
+
+- name: OpenVPN | LogRotate | Set the logrotate configuration
+  template:
+    src: etc_logrotate_logrotated_openvpn.j2
+    dest: "/etc/logrotate.d/openvpn.logrotate"

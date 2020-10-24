@@ -1,6 +1,7 @@
 required_packages:
   - openssl
   - openvpn
+  - logrotate
 
 openvpn_remotedir: '/etc/openvpn/'
 openvpn_serverdir: '{{ openvpn_remotedir }}server/'

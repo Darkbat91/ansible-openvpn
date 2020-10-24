@@ -1,10 +1,17 @@
 # Also allow this server to act as a bastion for admins
 acting_bastion: true
 
+# Days of Openvpn Logs to keep (Modifies the logrotate step)
+days_to_keep: 30
+
 # VPN Config
-VPN_CIDR: '10.2.0.0/16'
+VPN_CIDR: '10.2.0.0/24'
 VPN_GATEWAY: '10.2.0.1'
-VPN_MASK: '10.2.0.0 255.255.0.0'
+VPN_MASK: '10.2.0.0 255.255.255.0'
+
+VPN_CIDR2: '10.2.1.0/25'
+VPN_GATEWAY2: '10.2.1.1'
+VPN_MASK2: '10.2.0.0 255.255.255.0'
 
 # Instances of openvpn to run
 openvpn_instances:
@@ -19,9 +26,9 @@ openvpn_instances:
   - {
       proto: tcp,
       port: 443,
-      mask: "{{ VPN_MASK }}",
-      cidr: "{{ VPN_CIDR }}",
-      gateway: "{{ VPN_GATEWAY }}",
+      mask: "{{ VPN_MASK2 }}",
+      cidr: "{{ VPN_CIDR2 }}",
+      gateway: "{{ VPN_GATEWAY2 }}",
   }
 
 # CIDR - classless interdomain routing

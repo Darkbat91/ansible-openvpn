@@ -36,7 +36,7 @@ ecdh-curve secp384r1
 
 # General Networking
 server {{ item.mask }}
-ifconfig-pool-persist {{ openvpn_serverdir }}ipp.txt 10
+ifconfig-pool-persist {{ openvpn_serverdir }}ipp-{{ item.proto }}-{{ item.port }}.txt 10
 # Specify the Client configuration directory relative to the service start
 client-config-dir {{ openvpn_serverdir }}/ccd
 # Enable clients to communicate with one another

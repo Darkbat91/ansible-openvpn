@@ -1,0 +1,12 @@
+{% for server in openvpn_instances %}
+/etc/openvpn/server/openvpn-{{ server.proto }}-{{ server.port }}.log {
+    size 100M
+    compress
+    copytruncate
+    daily
+    rotate {{ days_to_keep }}
+    shred
+    notifempty
+    missingok
+}
+{% endfor %}
