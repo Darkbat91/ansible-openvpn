@@ -2,6 +2,8 @@
 - name: SSL test
   shell: which openssl
   register: ssltest
+  tags:
+    - skip_ansible_lint
 
 - name: Debug ssl
   debug:
