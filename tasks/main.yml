@@ -8,4 +8,10 @@
 
 - include: ovpn.yml
 
+- include: ovpn-gateway.yml
+  loop: "{{ openvpn_instances }}"
+  loop_control:
+    loop_var: vpn_instance
+  when: create_gateways
+
 - include: ovpn-security.yml

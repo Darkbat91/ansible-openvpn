@@ -1,0 +1,10 @@
+- name: OpenVPN | Create CCD Files For Gateways
+  template:
+    src: etc_openvpn_server_ccd.j2
+    dest: '/etc/openvpn/server/ccd-{{ vpn_instance.proto }}-{{ vpn_instance.port }}/{{ item.name }}'
+    owner: openvpn
+    group: openvpn
+    mode: '0440'
+  loop: "{{ vpn_instance.client_gateways }}"
+  loop_control:
+    label: "{{ item.name }}"
