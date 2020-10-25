@@ -8,10 +8,10 @@
       apt: update_cache=true cache_valid_time=600
       when: ansible_os_family == 'Debian'
       changed_when: false
-    - name: make pki dir
-      file:
-        path: "{{ pki_dir }}"
-        state: directory
+    # - name: make pki dir
+    #   file:
+    #     path: "{{ pki_dir }}"
+    #     state: directory
     - name: make pki files
       file:
         path: "{{ item }}"
@@ -25,6 +25,7 @@
         - "{{ pki_dir }}/vpn.pem"
       tags:
         - skip_ansible_lint
+      delegate_to: localhost
   roles:
     - role: openvpn
   vars:
