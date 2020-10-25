@@ -11,7 +11,7 @@
     - name: make pki dir
       file:
         path: "{{ pki_dir }}"
-        state: directory     
+        state: directory
     - name: make pki files
       file:
         path: "{{ item }}"
