@@ -4,6 +4,7 @@
   register: ssltest
 
 - name: Debug ssl
+  debug:
     var: ssltest
 
 - name: OpenVPN | Certs | Ensure the directories exist
