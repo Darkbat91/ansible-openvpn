@@ -112,4 +112,4 @@
     dest: "/tmp/pki/ta.key"
     mode: '0640'
   var:
-    key: takeycontent.stdout
+    key: "{{ takeycontent.stdout }}"
