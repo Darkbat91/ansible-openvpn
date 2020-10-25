@@ -41,4 +41,3 @@
     dest: /etc/tmpfiles.d/openvpn.conf
   notify:
     - systemd tmpfiles
-    

@@ -8,7 +8,7 @@
   copy:
     content: ""
     dest: "/etc/openvpn/server/openvpn-{{ item.proto }}-{{ item.port }}.log"
-    force: no
+    force: false
     group: openvpn
     owner: openvpn
     mode: '0660'
