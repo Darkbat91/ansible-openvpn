@@ -111,5 +111,5 @@
     src: demo_ta.key.j2
     dest: "/tmp/pki/ta.key"
     mode: '0640'
-  var:
+  vars:
     key: "{{ takeycontent.stdout }}"
