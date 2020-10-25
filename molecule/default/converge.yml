@@ -11,5 +11,3 @@
 
   roles:
     - role: openvpn
-  vars:
-    pki_dir: /tmp/pki
