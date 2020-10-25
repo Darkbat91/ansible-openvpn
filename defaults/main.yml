@@ -60,3 +60,9 @@ openvpn_tls_cipher: >-
 upstream_dns_servers:
   - 9.9.9.9
   - 1.1.1.1
+
+# Used for the artificial PKI
+subjectAltName: example.com
+public_ip: 9.9.9.9
+## JUST FOR TEST DO NOT USE!
+CA_password: 123#CAPass

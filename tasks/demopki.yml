@@ -1,0 +1,115 @@
+---
+- name: OpenVPN | Certs | Ensure the directories exist
+  file:
+    dest: "/tmp/pki/{{ item }}"
+    state: directory
+    recurse: yes
+    mode: '0700'
+  with_items:
+    - ecparams
+    - certs
+    - crl
+    - newcerts
+    - private
+    - public
+    - reqs
+
+- name: OpenVPN | Certs | Ensure the files exist
+  file:
+    dest: "/tmp/pki/{{ item }}"
+    state: touch
+    mode: '0640'
+  with_items:
+    - ".rnd"
+    - "private/.rnd"
+    - "index.txt"
+    - "index.txt.attr"
+    - "serial"
+
+- name: OpenVPN | Certs | Generate the openssl server configs
+  template:
+    src: openssl.cnf.j2
+    dest: "/tmp/pki/openssl.cnf"
+    mode: '0640'
+
+- name: OpenVPN | Certs | Build the CA pair
+  shell: >
+    umask 077;
+    openssl ecparam -name secp384r1 -out ecparams/secp384r1.pem &&
+    openssl req -utf8 -new
+    -newkey ec:ecparams/secp384r1.pem
+    -config <(cat openssl.cnf <(printf "[basic_exts]\nsubjectAltName={{ subjectAltName }}"))
+    -keyout ca.key
+    -out ca.pem -x509 -days 3650
+    -batch
+    -passout pass:"{{ CA_password }}" &&
+    touch ca_generated
+  args:
+    chdir: "/tmp/pki/"
+    creates: "ca_generated"
+    executable: bash
+
+- name: OpenVPN | Certs | Generate the serial number
+  shell: echo 01 > serial && touch serial_generated
+  args:
+    chdir: "/tmp/pki/"
+    creates: serial_generated
+
+- name: OpenVPN | Certs | Build the server pair
+  shell: >
+    umask 077;
+    openssl req -utf8 -new
+    -newkey ec:ecparams/secp384r1.pem
+    -config <(cat openssl.cnf <(printf "[basic_exts]\nsubjectAltName=IP:{{ public_ip }}"))
+    -keyout vpn.key
+    -out reqs/server.req -nodes
+    -passin pass:"{{ CA_password }}"
+    -subj "/CN=server@ovpn" -batch &&
+    openssl ca -utf8
+    -in reqs/server.req
+    -out vpn.pem
+    -config <(cat openssl.cnf <(printf "[basic_exts]\nsubjectAltName=IP:{{ public_ip }}"))
+    -days 365 -batch
+    -passin pass:"{{ CA_password }}"
+    -subj "/CN=server@ovpn" &&
+    touch certs/server_crt_generated
+  args:
+    chdir: "/tmp/pki/"
+    creates: certs/server_crt_generated
+    executable: bash
+
+- name: OpenVPN | Certs | Build the DH
+  shell: >
+    umask 077;
+    openssl dhparam 2048 -out dh.pem &&
+    touch certs/dh_generated
+  args:
+    chdir: "/tmp/pki/"
+    creates: certs/dh_generated
+    executable: bash
+
+- name: OpenVPN | Certs | Genereate blank CRL file
+  shell: >
+    openssl ca -gencrl
+    -config openssl.cnf
+    -passin pass:"{{ CA_password }}"
+    -out crl.pem
+  args:
+    chdir: '/tmp/pki/'
+    executable: bash
+
+- name: OpenVPN | Certs | Set dir
+  set_fact:
+    pki_dir: "/tmp/pki"
+
+- name: OpenVPN | Certs | gen takey
+  shell: openssl prime -generate -bits 2048 -hex
+  register: takeycontent
+
+- name: OpenVPN | Certs | write takey
+  template: 
+    src: demo_ta.key.j2
+    dest: "/tmp/pki/ta.key"
+    mode: '0640'
+  var:
+    key: takeycontent.stdout

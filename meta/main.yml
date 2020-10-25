@@ -6,3 +6,6 @@ dependencies:
     vars:
       allow_reboot: true
       permit_ssh_forward: "{{ acting_bastion }}"
+  - src: git+https://github.com/Darkbat91/ansible-iptables
+    version: v1
+    name: iptables
