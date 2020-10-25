@@ -8,7 +8,11 @@
       apt: update_cache=true cache_valid_time=600
       when: ansible_os_family == 'Debian'
       changed_when: false
-    - name: make pkidir and files
+    - name: make pki dir
+      file:
+        path: "{{ pki_dir }}"
+        state: directory     
+    - name: make pki files
       file:
         path: "{{ item }}"
         state: touch
