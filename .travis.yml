@@ -1,0 +1,58 @@
+Skip to content
+Why GitHub? 
+Team
+Enterprise
+Explore 
+Marketplace
+Pricing 
+Search
+
+Sign in
+Sign up
+geerlingguy
+/
+ansible-role-java
+9226285
+Code
+Issues
+2
+Pull requests
+2
+Actions
+Security
+Insights
+Join GitHub today
+GitHub is home to over 50 million developers working together to host and review code, manage projects, and build software together.
+
+ansible-role-java/.travis.yml
+@geerlingguy
+geerlingguy Make sure docker driver is installed with molecule.
+Latest commit baa2e03 10 days ago
+ History
+ 3 contributors
+@geerlingguy@lucasmaurice@lcd1232
+38 lines (32 sloc)  1010 Bytes
+  
+---
+language: python
+services: docker
+
+env:
+  global:
+    - ROLE_NAME: openvpn
+  matrix:
+    - MOLECULE_DISTRO: centos8
+    - MOLECULE_DISTRO: centos7
+
+before_install:
+  # Upgrade Docker to work with docker-py.
+  - curl https://gist.githubusercontent.com/geerlingguy/ce883ad4aec6a5f1187ef93bd338511e/raw/36612d28981d92863f839c5aefe5b7dd7193d6c6/travis-ci-docker-upgrade.sh | sudo bash
+
+install:
+  # Install test dependencies.
+  - pip install molecule[docker] yamllint ansible-lint docker
+
+script:
+  # Run tests.
+  - molecule test
+
