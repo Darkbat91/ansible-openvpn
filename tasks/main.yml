@@ -1,6 +1,6 @@
 ---
 # Make a quick pki that will boot strap something useable
-- debug: 
+- debug:
     msg: "pki_dir is required"
   failed_when: pki_dir is not defined
 

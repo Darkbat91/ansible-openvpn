@@ -26,7 +26,7 @@ openvpn_instances:
     mask: "{{ VPN_MASK }}"
     cidr: "{{ VPN_CIDR }}"
     gateway: "{{ VPN_GATEWAY }}"
-    client_gateways: 
+    client_gateways:
       - name: "gateway30"
         ipaddress: 10.2.0.240
         cidr: '192.168.30.0/24'
@@ -41,18 +41,18 @@ openvpn_instances:
     mask: "{{ VPN_MASK }}"
     cidr: "{{ VPN_CIDR }}"
     gateway: "{{ VPN_GATEWAY }}"
-    client_gateways: 
+    client_gateways:
       - name: "gateway32"
         ipaddress: 10.2.0.242
         cidr: '192.168.32.0/24'
-        fullyqualified: '192.168.32.0 255.255.255.0'     
+        fullyqualified: '192.168.32.0 255.255.255.0'
       - name: "gateway33"
         ipaddress: 10.2.0.243
         cidr: '192.168.33.0/24'
         fullyqualified: '192.168.33.0 255.255.255.0'
 
 
-# Crypto 
+# Crypto
 openvpn_auth_digest: SHA384
 openvpn_cipher: AES-256-GCM
 openvpn_tls_cipher: >-

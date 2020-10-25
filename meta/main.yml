@@ -1,8 +1,8 @@
 ---
 dependencies:
   - src: git+https://github.com/Darkbat91/centbasic
-    version: v1 
-    name: centbasic 
+    version: v1
+    name: centbasic
     vars:
       allow_reboot: true
       permit_ssh_forward: "{{ acting_bastion }}"
