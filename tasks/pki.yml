@@ -1,3 +1,4 @@
+---
 - name: OpenVPN | PKI | Deploy server Cert
   copy:
     src: '{{ pki_dir }}/vpn.pem'
