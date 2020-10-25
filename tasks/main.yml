@@ -8,6 +8,4 @@
 
 - include: ovpn.yml
 
-- include: ovpn-gateways.yml
-
 - include: ovpn-security.yml
