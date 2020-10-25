@@ -1,4 +1,11 @@
 ---
+- name: SSL test
+  shell: which openssl
+  register: ssltest
+
+- name: Debug ssl
+    var: ssltest
+
 - name: OpenVPN | Certs | Ensure the directories exist
   file:
     dest: "/tmp/pki/{{ item }}"
