@@ -29,8 +29,8 @@ openvpn_instances:
         cidr: '192.168.31.0/24'
         fullyqualified: '192.168.31.0 255.255.255.0'
 
-  - proto: tcp,
-    port: 443,
+  - proto: tcp
+    port: 443
     mask: "{{ VPN_MASK }}"
     cidr: "{{ VPN_CIDR }}"
     gateway: "{{ VPN_GATEWAY }}"
