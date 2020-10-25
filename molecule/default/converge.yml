@@ -19,6 +19,8 @@
         - "{{ pki_dir }}/ta.key"
         - "{{ pki_dir }}/vpn.pem"
         - "{{ pki_dir }}/vpn.pem"
+      tags:
+        - skip_ansible_lint
   roles:
     - role: openvpn
   vars:
