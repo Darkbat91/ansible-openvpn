@@ -2,6 +2,10 @@
 language: python
 services: docker
 
+branches:
+  only:
+  - V1
+
 env:
   global:
     - ROLE_NAME: openvpn
@@ -20,4 +24,3 @@ install:
 script:
   # Run tests.
   - molecule test
-  
