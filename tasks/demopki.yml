@@ -3,7 +3,7 @@
   file:
     dest: "/tmp/pki/{{ item }}"
     state: directory
-    recurse: yes
+    recurse: true
     mode: '0700'
   with_items:
     - ecparams
@@ -48,12 +48,16 @@
     chdir: "/tmp/pki/"
     creates: "ca_generated"
     executable: bash
+  tags:
+    - skip_ansible_lint
 
 - name: OpenVPN | Certs | Generate the serial number
   shell: echo 01 > serial && touch serial_generated
   args:
     chdir: "/tmp/pki/"
     creates: serial_generated
+  tags:
+    - skip_ansible_lint
 
 - name: OpenVPN | Certs | Build the server pair
   shell: >
@@ -77,6 +81,8 @@
     chdir: "/tmp/pki/"
     creates: certs/server_crt_generated
     executable: bash
+  tags:
+    - skip_ansible_lint
 
 - name: OpenVPN | Certs | Build the DH
   shell: >
@@ -87,6 +93,8 @@
     chdir: "/tmp/pki/"
     creates: certs/dh_generated
     executable: bash
+  tags:
+    - skip_ansible_lint
 
 - name: OpenVPN | Certs | Genereate blank CRL file
   shell: >
@@ -97,6 +105,8 @@
   args:
     chdir: '/tmp/pki/'
     executable: bash
+  tags:
+    - skip_ansible_lint
 
 - name: OpenVPN | Certs | Set dir
   set_fact:
@@ -105,6 +115,8 @@
 - name: OpenVPN | Certs | gen takey
   shell: openssl prime -generate -bits 2048 -hex
   register: takeycontent
+  tags:
+    - skip_ansible_lint
 
 - name: OpenVPN | Certs | write takey
   template:
