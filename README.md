@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/Darkbat91/openvpn.svg?branch=v1)](https://travis-ci.org/Darkbat91/openvpn)
+
 # Ansible openvpn role
 Basic ansible role to enable openvpn on a Centos server listening on TCP 443 to bypass firewalls and on 1194 for performance.
 
