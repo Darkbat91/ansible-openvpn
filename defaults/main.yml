@@ -4,6 +4,9 @@ acting_bastion: true
 # Days of Openvpn Logs to keep (Modifies the logrotate step)
 days_to_keep: 30
 
+permit_client_to_client: false
+block_local_subnet: true
+
 # VPN Config
 VPN_CIDR: '10.2.0.0/24'
 VPN_GATEWAY: '10.2.0.1'

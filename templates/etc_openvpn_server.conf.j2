@@ -39,8 +39,11 @@ server {{ item.mask }}
 ifconfig-pool-persist {{ openvpn_serverdir }}ipp-{{ item.proto }}-{{ item.port }}.txt 10
 # Specify the Client configuration directory relative to the service start
 client-config-dir {{ openvpn_serverdir }}/ccd-{{ item.proto }}-{{ item.port }}
-# Enable clients to communicate with one another
-# client-to-client
+# Enable clients to communicate with one another{% if permit_client_to_client %}
+client-to-client{% else %}
+# client-to-client{% endif %}
+
+
 
 # Configure the below line with the proper IP space for every ClientGW subnet relevant
 # route 10.10.23.0 255.255.255.0
@@ -55,10 +58,13 @@ topology subnet
 {% for server in upstream_dns_servers %}
 push "dhcp-option DNS {{ server }}"
 {% endfor %}
+{% if block_local_subnet %}
 # Block Local Subnet access
-push "redirect-gateway block-local"
-# IF local is needed switch to this Directive
-#push "redirect-gateway def1"
+push "redirect-gateway block-local"{% else %}
+# Allow local subnet access
+push "redirect-gateway def1"{% endif %}
+
+
 # Fix for the Windows 10 DNS leak described here:
 # https://community.openvpn.net/openvpn/ticket/605
 push block-outside-dns
