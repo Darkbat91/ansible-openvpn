@@ -1,5 +1,6 @@
 ---
 - name: OpenVPN | package | Install required packages
-  package:
+  yum:
     name: "{{ item }}"
+    update_cache: true
   with_items: "{{ required_packages }}"
