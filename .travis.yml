@@ -10,7 +10,8 @@ env:
   global:
     - ROLE_NAME: openvpn
   matrix:
-    - MOLECULE_DISTRO: centos8
+    # Long tail to run centos8
+    # - MOLECULE_DISTRO: centos8
     - MOLECULE_DISTRO: centos7
 
 before_install:
