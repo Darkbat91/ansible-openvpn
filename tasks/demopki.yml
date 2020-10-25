@@ -107,7 +107,7 @@
   register: takeycontent
 
 - name: OpenVPN | Certs | write takey
-  template: 
+  template:
     src: demo_ta.key.j2
     dest: "/tmp/pki/ta.key"
     mode: '0640'
