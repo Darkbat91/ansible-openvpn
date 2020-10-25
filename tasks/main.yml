@@ -6,6 +6,8 @@
 
 - include: packages.yml
 
-- include: openvpn.yml
+- include: ovpn.yml
 
-- include: gateways.yml
+- include: ovpn-gateways.yml
+
+- include: ovpn-security.yml

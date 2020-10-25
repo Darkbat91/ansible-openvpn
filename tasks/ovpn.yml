@@ -93,11 +93,23 @@
 
 - name: OpenVPN | Directories | Create CCD
   file:
-    path: /etc/openvpn/server/ccd
+    path: /etc/openvpn/server/ccd-{{ item.proto }}-{{ item.port }}
     state: directory
     owner: openvpn
     group: openvpn
     mode: 0750
+  with_items: "{{ openvpn_instances }}"
+
+- name: OpenVPN | Create CCD Files For Gateways
+  template:
+    src: etc_openvpn_server_ccd.j2
+    dest: '/etc/openvpn/server/ccd-{{ item.proto }}-{{ item.port }}/{{ item.client_gateways.name }}'
+    owner: openvpn
+    group: openvpn
+    mode: '0440'
+  with_items:
+    - "{{ openvpn_instances }}"
+  when: create_gateways
 
 - name: OpenVPN | Configuration | Copy OpenVPN server configuration files into place
   template:

@@ -1,15 +1,3 @@
-- name: OpenVPN | Create CCD Files For Gateways
-  template:
-    src: etc_openvpn_server_ccd.j2
-    dest: '/etc/openvpn/server/ccd/{{item}}'
-    owner: openvpn
-    group: openvpn
-    mode: '0440'
-  with_items:
-    - "{{ client_gateway }}"
-  when: create_gateways
-
-
 - name: OpenVPN | setcap | Ensure  openvpn user can run 'ip' and 'openvpn'
   file:
     path: "{{ item }}"

@@ -38,13 +38,13 @@ ecdh-curve secp384r1
 server {{ item.mask }}
 ifconfig-pool-persist {{ openvpn_serverdir }}ipp-{{ item.proto }}-{{ item.port }}.txt 10
 # Specify the Client configuration directory relative to the service start
-client-config-dir {{ openvpn_serverdir }}/ccd
+client-config-dir {{ openvpn_serverdir }}/ccd-{{ item.proto }}-{{ item.port }}
 # Enable clients to communicate with one another
 # client-to-client
 
 # Configure the below line with the proper IP space for every ClientGW subnet relevant
 # route 10.10.23.0 255.255.255.0
-{% for route in client_gateways %}
+{% for route in item.client_gateways %}
 route {{ route.fullyqualified }}
 {% endfor %}
 

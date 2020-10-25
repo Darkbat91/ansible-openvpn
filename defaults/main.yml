@@ -9,10 +9,6 @@ VPN_CIDR: '10.2.0.0/24'
 VPN_GATEWAY: '10.2.0.1'
 VPN_MASK: '10.2.0.0 255.255.255.0'
 
-VPN_CIDR2: '10.2.1.0/25'
-VPN_GATEWAY2: '10.2.1.1'
-VPN_MASK2: '10.2.0.0 255.255.255.0'
-
 # Instances of openvpn to run
 openvpn_instances:
   - {
@@ -21,29 +17,41 @@ openvpn_instances:
       mask: "{{ VPN_MASK }}",
       cidr: "{{ VPN_CIDR }}",
       gateway: "{{ VPN_GATEWAY }}",
+      client_gateways:
+        - {
+          name: "gateway30",
+          cidr: '192.168.30.0/24',
+          fullyqualified: '192.168.30.0 255.255.255.0'
+        }
+        - {
+          name: "gateway31",
+          cidr: '192.168.31.0/24',
+          fullyqualified: '192.168.31.0 255.255.255.0'
+        }
   }
 
   - {
       proto: tcp,
       port: 443,
-      mask: "{{ VPN_MASK2 }}",
-      cidr: "{{ VPN_CIDR2 }}",
-      gateway: "{{ VPN_GATEWAY2 }}",
+      mask: "{{ VPN_MASK }}",
+      cidr: "{{ VPN_CIDR }}",
+      gateway: "{{ VPN_GATEWAY }}",
+      client_gateways:
+        - {
+          name: "gateway32",
+          cidr: '192.168.32.0/24',
+          fullyqualified: '192.168.32.0 255.255.255.0'
+        }
+        - {
+          name: "gateway33",
+          cidr: '192.168.33.0/24',
+          fullyqualified: '192.168.33.0 255.255.255.0'
+        }
   }
 
 # CIDR - classless interdomain routing
-create_gateways: false
-client_gateways:
-  - {
-    name: "gateway30",
-    cidr: '192.168.30.0/24',
-    fullyqualified: '192.168.30.0 255.255.255.0'
-   }
-  - {
-    name: "gateway31",
-    cidr: '192.168.31.0/24',
-    fullyqualified: '192.168.31.0 255.255.255.0'
-   }
+create_gateways: true
+
 
 # Crypto 
 openvpn_auth_digest: SHA384

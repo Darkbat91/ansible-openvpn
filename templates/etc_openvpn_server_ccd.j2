@@ -5,6 +5,6 @@
 push "redirect-gateway def1"
 
 # Sets the IP address of the device
-ifconfig-push {{ STATIC_MASK |replace("REPL", index + STATIC_START)}}
+ifconfig-push {{ item.client_gateways.ipaddress }}
 # lets Open VPN know that the below subnet is behind this VPN client
-iroute {{ item.fullyqualified }}
+iroute {{ item.client_gateways.fullyqualified }}
