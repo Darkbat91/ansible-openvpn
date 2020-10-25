@@ -21,6 +21,7 @@
   with_items: "{{ openvpn_instances }}"
   tags:
     - skip_ansible_lint
+  when: (ansible_virtualization_type != "docker")
 
 - name: OpenVPN | SELinux | Make fixes effective
   shell: "restorecon /etc/openvpn/server/openvpn-{{ item.proto }}-{{ item.port }}.log"
@@ -29,6 +30,7 @@
   with_items: "{{ openvpn_instances }}"
   tags:
     - skip_ansible_lint
+  when: (ansible_virtualization_type != "docker")
 
 - name: OpenVPN | PKI | Deploy server Cert
   copy:
