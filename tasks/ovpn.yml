@@ -1,3 +1,4 @@
+---
 - name: OpenVPN | sysctl | Enable IPv4 traffic forwarding
   sysctl:
     name: net.ipv4.ip_forward
@@ -115,3 +116,4 @@
   template:
     src: etc_logrotate_logrotated_openvpn.j2
     dest: "/etc/logrotate.d/openvpn.logrotate"
+    

@@ -1,3 +1,4 @@
+---
 - name: OpenVPN | Create CCD Files For Gateways
   template:
     src: etc_openvpn_server_ccd.j2

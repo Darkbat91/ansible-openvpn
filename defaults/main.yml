@@ -1,3 +1,4 @@
+---
 # Also allow this server to act as a bastion for admins
 acting_bastion: true
 

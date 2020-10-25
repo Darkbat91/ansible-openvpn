@@ -1,4 +1,4 @@
-
+---
 # Make a quick pki that will boot strap something useable
 - debug: 
     msg: "pki_dir is required"
