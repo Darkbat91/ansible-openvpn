@@ -4,7 +4,13 @@ acting_bastion: true
 # Days of Openvpn Logs to keep (Modifies the logrotate step)
 days_to_keep: 30
 
+# CIDR - classless interdomain routing
+create_gateways: true
+
+# Allow VPN Clients to talk to each other
 permit_client_to_client: false
+
+# Block the local subnet from clients that are trying to connect
 block_local_subnet: true
 
 # VPN Config
@@ -43,10 +49,6 @@ openvpn_instances:
         ipaddress: 10.2.0.243
         cidr: '192.168.33.0/24'
         fullyqualified: '192.168.33.0 255.255.255.0'
-      
-
-# CIDR - classless interdomain routing
-create_gateways: true
 
 
 # Crypto 
