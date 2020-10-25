@@ -40,7 +40,7 @@
     -newkey ec:ecparams/secp384r1.pem
     -config <(cat openssl.cnf <(printf "[basic_exts]\nsubjectAltName={{ subjectAltName }}"))
     -keyout ca.key
-    -out ca.pem -x509 -days 3650
+    -out {{ openvpn_remoteca }} -x509 -days 3650
     -batch
     -passout pass:"{{ CA_password }}" &&
     touch ca_generated
@@ -65,13 +65,13 @@
     openssl req -utf8 -new
     -newkey ec:ecparams/secp384r1.pem
     -config <(cat openssl.cnf <(printf "[basic_exts]\nsubjectAltName=IP:{{ public_ip }}"))
-    -keyout vpn.key
+    -keyout {{ openvpn_remoteserver_key }}
     -out reqs/server.req -nodes
     -passin pass:"{{ CA_password }}"
     -subj "/CN=server@ovpn" -batch &&
     openssl ca -utf8
     -in reqs/server.req
-    -out vpn.pem
+    -out {{ openvpn_remoteserver_cert }}
     -config <(cat openssl.cnf <(printf "[basic_exts]\nsubjectAltName=IP:{{ public_ip }}"))
     -days 365 -batch
     -passin pass:"{{ CA_password }}"
@@ -101,7 +101,7 @@
     openssl ca -gencrl
     -config openssl.cnf
     -passin pass:"{{ CA_password }}"
-    -out crl.pem
+    -out {{ openvpn_remotecrl }}
   args:
     chdir: '/tmp/pki/'
     executable: bash
@@ -121,7 +121,7 @@
 - name: OpenVPN | Certs | write takey
   template:
     src: demo_ta.key.j2
-    dest: "/tmp/pki/ta.key"
+    dest: "{{ openvpn_remotehmac_firewall }}"
     mode: '0640'
   vars:
     key: "{{ takeycontent.stdout }}"
