@@ -12,6 +12,7 @@
       file:
         path: "{{ pki_dir }}"
         state: directory
+      delegate_to: localhost
     - name: make pki files
       file:
         path: "{{ item }}"
