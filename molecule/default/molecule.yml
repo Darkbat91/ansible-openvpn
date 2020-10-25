@@ -2,8 +2,7 @@
 dependency:
   name: galaxy
   options:
-    ignore-certs: True
-    ignore-errors: True
+    ignore-certs: true
     role-file: molecule/requirements.yml
 
 driver:
