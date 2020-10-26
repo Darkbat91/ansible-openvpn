@@ -97,7 +97,7 @@
 - name: OpenVPN | Certs | Build the DH
   shell: >
     umask 077;
-    openssl dhparam 2048 -out dh.pem &&
+    openssl dhparam 2048 -out {{ openvpn_remotedh }} &&
     touch certs/dh_generated
   args:
     chdir: "/tmp/pki/"
