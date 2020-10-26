@@ -33,7 +33,7 @@ $'
   notify: load_iptables
   when: create_gateways
 
-- name: OpenVPN | Add Gateway Access rules for {{ vpn_instance.proto }}-{{ vpn_instance.port }} 
+- name: OpenVPN | Add Gateway Access rules for {{ vpn_instance.proto }}-{{ vpn_instance.port }}
   lineinfile:
     dest: /etc/sysconfig/iptables
     insertafter: '-A POSTROUTING -j VPNGateways'
@@ -67,7 +67,7 @@ $'
     validate: iptables-restore --test %s
   notify: load_iptables
 
-- name: OpenVPN | Add filter INPUT rules for {{ vpn_instance.proto }}-{{ vpn_instance.port }} 
+- name: OpenVPN | Add filter INPUT rules for {{ vpn_instance.proto }}-{{ vpn_instance.port }}
   lineinfile:
     dest: /etc/sysconfig/iptables
     insertafter: '-A INPUT -j VPNInput'
@@ -75,7 +75,7 @@ $'
     line: "{{ item.line }}"
     state: present
     validate: iptables-restore --test %s
-  notify: load_iptables  
+  notify: load_iptables
   with_items:
     - regx: '^-A\sVPNInput\s-p\s{{ vpn_instance.proto }}\s--dport\s{{ vpn_instance.port }}\s-j\sACCEPT\s-m\scomment\s--comment\s"Accept\straffic\sto\sthe\sOpenVPN\sport"$'
       line: '-A VPNInput -p {{ vpn_instance.proto }} --dport {{ vpn_instance.port }} -j ACCEPT -m comment --comment "Accept traffic to the OpenVPN port"'
