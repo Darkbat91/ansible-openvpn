@@ -60,4 +60,3 @@ openvpn_tls_cipher: >-
 upstream_dns_servers:
   - 9.9.9.9
   - 1.1.1.1
-
