@@ -17,3 +17,8 @@
   when: create_gateways
 
 - include: ovpn-security.yml
+
+- include: ovpn-iptables.yml
+  loop: "{{ openvpn_instances }}"
+  loop_control:
+    loop_var: vpn_instance

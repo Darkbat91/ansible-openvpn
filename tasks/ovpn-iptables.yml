@@ -1,0 +1,85 @@
+---
+- name: OpenVPN | Set the iptables nat Masqurade for {{ vpn_instance.proto }}-{{ vpn_instance.port }}
+  lineinfile:
+    dest: /etc/sysconfig/iptables
+    insertafter: '^#nat_rules'
+    regexp: '^-A\sPOSTROUTING\s-s\s{{ vpn_instance.cidr }}\s-m\spolicy\s--pol\snone\s--dir\sout\s-j\sMASQUERADE\s-m\scomment\s--comment\s"Route OpenVPN"
+$'
+    line: '-A POSTROUTING -s {{ vpn_instance.cidr }} -m policy --pol none --dir out -j MASQUERADE -m comment --comment "Route OpenVPN"
+'
+    state: present
+    validate: iptables-restore --test %s
+  notify: load_iptables
+
+- name: OpenVPN | Create Gateway chain
+  lineinfile:
+    dest: /etc/sysconfig/iptables
+    insertafter: '^#nat_chains'
+    regexp: '^\:VPNGateways\s-\s[0:0]'
+    line: ':VPNGateways - [0:0]'
+    state: present
+    validate: iptables-restore --test %s
+  notify: load_iptables
+  when: create_gateways
+
+- name: OpenVPN | Add Jump point for Gateway Chain
+  lineinfile:
+    dest: /etc/sysconfig/iptables
+    insertafter: '^#nat_rules'
+    regexp: '^-A\sPOSTROUTING\s-j\sVPNGateways$'
+    line: '-A POSTROUTING -j VPNGateways'
+    state: present
+    validate: iptables-restore --test %s
+  notify: load_iptables
+  when: create_gateways
+
+- name: OpenVPN | Add Gateway Access rules for {{ vpn_instance.proto }}-{{ vpn_instance.port }} 
+  lineinfile:
+    dest: /etc/sysconfig/iptables
+    insertafter: '-A POSTROUTING -j VPNGateways'
+    regexp: '^-A\sVPNGateways\s-s\s{{ item.cidr }}\s-m policy\s--pol\snone\s--dir\sout\s-j\sMASQUERADE\s-m\scomment\s--comment\s"GW\sAccess\sfor\s{{ item.name }}"$'
+    line: '-A VPNGateways -s {{ item.cidr }} -m policy --pol none --dir out -j MASQUERADE -m comment --comment "GW Access for {{ item.name }}"'
+    state: present
+    validate: iptables-restore --test %s
+  notify: load_iptables
+  loop: "{{ vpn_instance.client_gateways }}"
+  loop_control:
+    label: "{{ item.name }}"
+  when: create_gateways
+
+- name: OpenVPN | Create Filter table Input chain
+  lineinfile:
+    dest: /etc/sysconfig/iptables
+    insertafter: '^#filter_chains'
+    regexp: '^\:VPNInput\s-\s[0:0]'
+    line: ':VPNInput - [0:0]'
+    state: present
+    validate: iptables-restore --test %s
+  notify: load_iptables
+
+- name: OpenVPN | Add Jump point for  Filter table Input chain
+  lineinfile:
+    dest: /etc/sysconfig/iptables
+    insertafter: '^#filter_rules'
+    regexp: '^-A\sINPUT\s-j\VPNInput$'
+    line: '-A INPUT -j VPNInput'
+    state: present
+    validate: iptables-restore --test %s
+  notify: load_iptables
+
+- name: OpenVPN | Add filter INPUT rules for {{ vpn_instance.proto }}-{{ vpn_instance.port }} 
+  lineinfile:
+    dest: /etc/sysconfig/iptables
+    insertafter: '-A INPUT -j VPNInput'
+    regexp: "{{ item.regx }}"
+    line: "{{ item.line }}"
+    state: present
+    validate: iptables-restore --test %s
+  notify: load_iptables  
+  with_items:
+    - regx: '^-A\sVPNInput\s-p\s{{ vpn_instance.proto }}\s--dport\s{{ vpn_instance.port }}\s-j\sACCEPT\s-m\scomment\s--comment\s"Accept\straffic\sto\sthe\sOpenVPN\sport"$'
+      line: '-A VPNInput -p {{ vpn_instance.proto }} --dport {{ vpn_instance.port }} -j ACCEPT -m comment --comment "Accept traffic to the OpenVPN port"'
+    - regx: '^-A\sVPNInput\s-p\sudp\s-d\s{{ vpn_instance.gateway }}\s--dport\s53\s-j\sACCEPT\s-m\scomment\s--comment\s"Allow\sDNS"$'
+      line: '-A VPNInput -p udp -d {{ vpn_instance.gateway }} --dport 53 -j ACCEPT -m comment --comment "Allow DNS"'
+    - regx: '^-A\sVPNInput\s-p\stcp\s-d\s{{ vpn_instance.gateway }}\s--dport\s53\s-j\sACCEPT\s-m\scomment\s--comment\s"Allow\sDNS"$'
+      line: '-A VPNInput -p tcp -d {{ vpn_instance.gateway }} --dport 53 -j ACCEPT -m comment --comment "Allow DNS"'
