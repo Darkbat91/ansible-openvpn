@@ -83,3 +83,38 @@ $'
       line: '-A VPNInput -p udp -d {{ vpn_instance.gateway }} --dport 53 -j ACCEPT -m comment --comment "Allow DNS"'
     - regx: '^-A\sVPNInput\s-p\stcp\s-d\s{{ vpn_instance.gateway }}\s--dport\s53\s-j\sACCEPT\s-m\scomment\s--comment\s"Allow\sDNS"$'
       line: '-A VPNInput -p tcp -d {{ vpn_instance.gateway }} --dport 53 -j ACCEPT -m comment --comment "Allow DNS"'
+
+- name: OpenVPN | Add Forward Chain
+  lineinfile:
+    dest: /etc/sysconfig/iptables
+    insertafter: '^#filter_chains'
+    regexp: '^\:VPNForward\s-\s[0:0]'
+    line: ':VPNForward - [0:0]'
+    state: present
+    validate: iptables-restore --test %s
+  notify: load_iptables
+
+- name: OpenVPN | Add Jump point for  Filter table Input chain
+  lineinfile:
+    dest: /etc/sysconfig/iptables
+    insertafter: '^#filter_rules'
+    regexp: '^-A\sFORWARD\s-j\VPNForward$'
+    line: '-A FORWARD -j VPNForward'
+    state: present
+    validate: iptables-restore --test %s
+  notify: load_iptables
+
+- name: OpenVPN | Add filter INPUT rules for {{ vpn_instance.proto }}-{{ vpn_instance.port }}
+  lineinfile:
+    dest: /etc/sysconfig/iptables
+    insertafter: '-A FORWARD -j VPNForward'
+    regexp: "{{ item.regx }}"
+    line: "{{ item.line }}"
+    state: present
+    validate: iptables-restore --test %s
+  notify: load_iptables
+  with_items:
+    - regx: '^-A\sVPNForward\s-m\sconntrack\s--ctstate\sRELATED,ESTABLISHED\s-j\sACCEPT\s-m\scomment\s--comment\s"Allow\sestablished\sconnections"$'
+      line: '-A VPNForward -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT -m comment --comment "Allow established connections"'
+    - regx: '^-A\sVPNForward\s-i\stun-{{ vpn_instance.proto }}-{{ vpn_instance.port }}\s-o\seth0\s-m\sconntrack\s--ctstate\sNEW\s-j\sACCEPT\s-m\scomment\s--comment\s"Allow\sOpenVPN\sto\sAccess\sInternet"$'
+      line: '-A VPNForward -i tun-{{ vpn_instance.proto }}-{{ vpn_instance.port }} -o eth0 -m conntrack --ctstate NEW -j ACCEPT -m comment --comment "Allow OpenVPN to Access Internet"'
