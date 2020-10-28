@@ -1,7 +1,4 @@
 ---
-# Also allow this server to act as a bastion for admins
-acting_bastion: true
-
 # Days of Openvpn Logs to keep (Modifies the logrotate step)
 days_to_keep: 30
 
