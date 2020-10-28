@@ -14,6 +14,10 @@ keepalive 10 120
 persist-key
 persist-tun
 engine rdrand
+sndbuf 0
+rcvbuf 0
+push "sndbuf 0"
+push "rcvbuf 0"
 
 # Server Crypto
 ca {{ openvpn_remoteca }}
