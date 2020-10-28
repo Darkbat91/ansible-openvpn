@@ -119,8 +119,8 @@ $'
     - regx: '^-A\sVPNForward\s-i\stun-{{ vpn_instance.proto }}-{{ vpn_instance.port }}\s-o\seth0\s-m\sconntrack\s--ctstate\sNEW\s-j\sACCEPT\s-m\scomment\s--comment\s"Allow\sOpenVPN\sto\sAccess\sInternet"$'
       line: '-A VPNForward -i tun-{{ vpn_instance.proto }}-{{ vpn_instance.port }} -o eth0 -m conntrack --ctstate NEW -j ACCEPT -m comment --comment "Allow OpenVPN to Access Internet"'
 
-  - name: OpenVPN | Ensure IPtables is started
-    service:
-      name: "iptables"
-    state: started
-    enabled: true
+- name: OpenVPN | Ensure IPtables is started
+  service:
+    name: "iptables"
+  state: started
+  enabled: true
