@@ -22,3 +22,9 @@
   loop: "{{ openvpn_instances }}"
   loop_control:
     loop_var: vpn_instance
+
+- name: Openvpn | Start | vpns
+  service:
+    name: "openvpn@{{ item.proto }}-{{ item.port }}.service"
+    state: started
+  with_items: "{{ openvpn_instances }}"

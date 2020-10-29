@@ -122,5 +122,5 @@ $'
 - name: OpenVPN | Ensure IPtables is started
   service:
     name: "iptables"
-  state: started
-  enabled: true
+    state: started
+    enabled: true
