@@ -9,19 +9,19 @@
   tags:
     - skip_ansible_lint
   args:
-    creates: "{{ openvpn_remotehmac_firewall }}"
+    creates: "{{ demo_pkipath }}/ta.key"
 
 - name: OpenVPN | Certs | write takey
   template:
     src: demo_ta.key.j2
-    dest: "{{ openvpn_remotehmac_firewall }}"
+    dest: "{{ demo_pkipath }}/ta.key"
     mode: 0640
   vars:
     key: "{{ takeycontent.stdout }}"
 
 - name: OpenVPN | Certs | Ensure the directories exist
   file:
-    dest: "{{ demo_pkipath }}{{ item }}"
+    dest: "{{ demo_pkipath }}/{{ item }}"
     state: directory
     recurse: true
     mode: '0700'
@@ -36,7 +36,7 @@
 
 - name: OpenVPN | Certs | Ensure the files exist
   file:
-    dest: "{{ demo_pkipath }}{{ item }}"
+    dest: "{{ demo_pkipath }}/{{ item }}"
     state: touch
     mode: '0640'
   with_items:
@@ -49,7 +49,7 @@
 - name: OpenVPN | Certs | Generate the openssl server configs
   template:
     src: openssl.cnf.j2
-    dest: "{{ demo_pkipath }}openssl.cnf"
+    dest: "{{ demo_pkipath }}/openssl.cnf"
     mode: '0640'
 
 - name: OpenVPN | Certs | Build the CA pair
@@ -60,7 +60,7 @@
     -newkey ec:ecparams/secp384r1.pem
     -config <(cat openssl.cnf <(printf "[basic_exts]\nsubjectAltName={{ subjectAltName }}"))
     -keyout ca.key
-    -out {{ openvpn_remoteca }} -x509 -days 3650
+    -out {{ demo_pkipath }}/ca.pem -x509 -days 3650
     -batch
     -passout pass:"{{ CA_password }}" &&
     touch ca_generated
@@ -85,13 +85,13 @@
     openssl req -utf8 -new
     -newkey ec:ecparams/secp384r1.pem
     -config <(cat openssl.cnf <(printf "[basic_exts]\nsubjectAltName=IP:{{ public_ip }}"))
-    -keyout {{ openvpn_remoteserver_key }}
+    -keyout {{ demo_pkipath }}/vpn.key
     -out reqs/server.req -nodes
     -passin pass:"{{ CA_password }}"
     -subj "/CN=server@ovpn" -batch &&
     openssl ca -utf8
     -in reqs/server.req
-    -out {{ openvpn_remoteserver_cert }}
+    -out {{ demo_pkipath }}/vpn.pem
     -config <(cat openssl.cnf <(printf "[basic_exts]\nsubjectAltName=IP:{{ public_ip }}"))
     -days 365 -batch
     -passin pass:"{{ CA_password }}"
@@ -107,7 +107,7 @@
 - name: OpenVPN | Certs | Build the DH
   shell: >
     umask 077;
-    openssl dhparam 2048 -out {{ openvpn_remotedh }} &&
+    openssl dhparam 2048 -out {{ demo_pkipath }}/dh.pem &&
     touch certs/dh_generated
   args:
     chdir: "{{ demo_pkipath }}"
@@ -121,14 +121,14 @@
     openssl ca -gencrl
     -config openssl.cnf
     -passin pass:"{{ CA_password }}"
-    -out {{ openvpn_remotecrl }}
+    -out {{ demo_pkipath }}/crl.pem
   args:
     chdir: '{{ demo_pkipath }}'
     executable: bash
-    creates: "{{ openvpn_remotecrl }}"
+    creates: "{{ demo_pkipath }}/crl.pem"
   tags:
     - skip_ansible_lint
 
 - name: OpenVPN | Certs | Set dir
   set_fact:
-    pki_dir: "/tmp/pki"
+    pki_dir: "{{ demo_pkipath }}"

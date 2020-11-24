@@ -7,7 +7,7 @@
 - name: OpenVPN | Directories | Create Extra files
   copy:
     content: ""
-    dest: "/etc/openvpn/server/openvpn-{{ item.proto }}-{{ item.port }}.log"
+    dest: "/etc/openvpn/server/{{ item.proto }}-{{ item.port }}.log"
     force: false
     group: openvpn
     owner: openvpn
@@ -15,7 +15,7 @@
   with_items: "{{ openvpn_instances }}"
 
 - name: OpenVPN | SELinux | Allow write to log file
-  shell: "semanage fcontext -a -t openvpn_var_log_t /etc/openvpn/server/openvpn-{{ item.proto }}-{{ item.port }}.log"
+  shell: "semanage fcontext -a -t openvpn_var_log_t /etc/openvpn/server/{{ item.proto }}-{{ item.port }}.log"
   changed_when: false
   become: true
   with_items: "{{ openvpn_instances }}"
@@ -24,7 +24,7 @@
   when: (ansible_virtualization_type != "docker")
 
 - name: OpenVPN | SELinux | Make fixes effective
-  shell: "restorecon /etc/openvpn/server/openvpn-{{ item.proto }}-{{ item.port }}.log"
+  shell: "restorecon /etc/openvpn/server/{{ item.proto }}-{{ item.port }}.log"
   changed_when: false
   become: true
   with_items: "{{ openvpn_instances }}"
