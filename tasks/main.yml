@@ -4,6 +4,7 @@
 
 - include: demopki.yml
   when: pki_dir is not defined
+  delegate: localhost
 
 - include: pki.yml
 
