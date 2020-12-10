@@ -3,6 +3,12 @@
   include_vars:
     file: demo.yml
 
+- name: OpenVPN | Certs | Make sure directory exists
+  file:
+    path: "{{ demo_pkipath }}"
+    state: directory
+    mode: '0755'
+
 - name: OpenVPN | Certs | gen takey
   shell: openssl prime -generate -bits 2048 -hex
   register: takeycontent
