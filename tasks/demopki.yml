@@ -3,6 +3,10 @@
   include_vars:
     file: demo.yml
 
+- name: OpenVPN | Certs | Set dir
+  set_fact:
+    pki_dir: "{{ demo_pkipath }}"
+
 - name: OpenVPN | Certs | Make sure directory exists
   file:
     path: "{{ demo_pkipath }}"
@@ -134,7 +138,3 @@
     creates: "{{ demo_pkipath }}/crl.pem"
   tags:
     - skip_ansible_lint
-
-- name: OpenVPN | Certs | Set dir
-  set_fact:
-    pki_dir: "{{ demo_pkipath }}"
