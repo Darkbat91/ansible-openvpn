@@ -12,17 +12,17 @@ permit_client_to_client: false
 block_local_subnet: true
 
 # VPN Config
-VPN_CIDR: '10.2.0.0/24'
-VPN_GATEWAY: '10.2.0.1'
-VPN_MASK: '10.2.0.0 255.255.255.0'
+vpn_cidr: '10.2.0.0/24'
+vpn_gateway: '10.2.0.1'
+vpn_mask: '10.2.0.0 255.255.255.0'
 
 # Instances of openvpn to run
 openvpn_instances:
   - proto: udp
     port: 1194
-    mask: "{{ VPN_MASK }}"
-    cidr: "{{ VPN_CIDR }}"
-    gateway: "{{ VPN_GATEWAY }}"
+    mask: "{{ vpn_mask }}"
+    cidr: "{{ vpn_cidr }}"
+    gateway: "{{ vpn_gateway }}"
     client_gateways:
       - name: "gateway30"
         ipaddress: 10.2.0.240
@@ -35,9 +35,9 @@ openvpn_instances:
 
   # - proto: tcp
   #   port: 443
-  #   mask: "{{ VPN_MASK }}"
-  #   cidr: "{{ VPN_CIDR }}"
-  #   gateway: "{{ VPN_GATEWAY }}"
+  #   mask: "{{ vpn_mask }}"
+  #   cidr: "{{ vpn_cidr }}"
+  #   gateway: "{{ vpn_gateway }}"
   #   client_gateways:
   #     - name: "gateway32"
   #       ipaddress: 10.2.0.242
@@ -57,3 +57,10 @@ openvpn_tls_cipher: >-
 upstream_dns_servers:
   - 9.9.9.9
   - 1.1.1.1
+
+local_vpn_cert: '{{ pki_dir }}/vpn.pem'
+local_vpn_key: '{{ pki_dir }}/vpn.key'
+local_takey: '{{ pki_dir }}/ta.key'
+local_crl: '{{ pki_dir }}/crl.pem'
+local_ca: '{{ pki_dir }}/ca.pem'
+local_dh: '{{ pki_dir }}/dh.pem'

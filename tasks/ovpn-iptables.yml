@@ -3,10 +3,8 @@
   lineinfile:
     dest: /etc/sysconfig/iptables
     insertafter: '^#nat_rules'
-    regexp: '^-A\sPOSTROUTING\s-s\s{{ vpn_instance.cidr }}\s-m\spolicy\s--pol\snone\s--dir\sout\s-j\sMASQUERADE\s-m\scomment\s--comment\s"Route OpenVPN"
-$'
-    line: '-A POSTROUTING -s {{ vpn_instance.cidr }} -m policy --pol none --dir out -j MASQUERADE -m comment --comment "Route OpenVPN"
-'
+    regexp: '^-A\sPOSTROUTING\s-s\s{{ vpn_instance.cidr }}\s-m\spolicy\s--pol\snone\s--dir\sout\s-j\sMASQUERADE\s-m\scomment\s--comment\s"Route OpenVPN"'
+    line: '-A POSTROUTING -s {{ vpn_instance.cidr }} -m policy --pol none --dir out -j MASQUERADE -m comment --comment "Route OpenVPN"'
     state: present
     validate: iptables-restore --test %s
   notify: load_iptables

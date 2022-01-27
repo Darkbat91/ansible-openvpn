@@ -2,10 +2,6 @@
 # Make a quick pki that will boot strap something useable
 - include: packages.yml
 
-- include: demopki.yml
-  when: pki_dir is not defined
-  delegate: localhost
-
 - include: pki.yml
 
 - include: ovpn.yml

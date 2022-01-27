@@ -1,5 +1,8 @@
+exclude_paths:
+- .cache/  # implicit unless exclude_paths is defined in config
+- .github/
+- molecule/
 warn_list:
-  - '204' # Lines should be less than 160 characters
-  - '701'  # meta/main.yml should contain relevant info
+  - meta-no-info
 skip_list:
   - '106' # Role name must match ^[a-z][a-z0-9_]+$ pattern

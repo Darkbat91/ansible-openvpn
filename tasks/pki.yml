@@ -1,7 +1,7 @@
 ---
 - name: OpenVPN | PKI | Deploy server Cert
   copy:
-    src: '{{ pki_dir }}/vpn.pem'
+    src: '{{ local_vpn_cert }}'
     dest: '{{ openvpn_remoteserver_cert }}'
     group: openvpn
     owner: openvpn
@@ -12,7 +12,7 @@
 
 - name: OpenVPN | PKI | Deploy server key
   copy:
-    src: '{{ pki_dir }}/vpn.key'
+    src: '{{ local_vpn_key }}'
     dest: '{{ openvpn_remoteserver_key }}'
     group: openvpn
     owner: openvpn
@@ -23,7 +23,7 @@
 
 - name: OpenVPN | PKI | Deploy ta.key
   copy:
-    src: '{{ pki_dir }}/ta.key'
+    src: '{{ local_takey }}'
     dest: '{{ openvpn_remotehmac_firewall }}'
     group: openvpn
     owner: openvpn
@@ -34,7 +34,7 @@
 
 - name: OpenVPN | PKI | Deploy CRL
   copy:
-    src: '{{ pki_dir }}/crl.pem'
+    src: '{{ local_crl }}'
     dest: '{{ openvpn_remotecrl }}'
     group: openvpn
     owner: openvpn
@@ -45,7 +45,7 @@
 
 - name: OpenVPN | PKI | Deploy CA
   copy:
-    src: '{{ pki_dir }}/ca.pem'
+    src: '{{ local_ca }}'
     dest: '{{ openvpn_remoteca }}'
     group: openvpn
     owner: openvpn
@@ -56,7 +56,7 @@
 
 - name: OpenVPN | PKI | Deploy DH
   copy:
-    src: '{{ pki_dir }}/dh.pem'
+    src: '{{ local_dh }}'
     dest: '{{ openvpn_remotedh }}'
     group: openvpn
     owner: openvpn
